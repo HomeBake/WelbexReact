@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 
+//Хранилище состояний для сущности таблицы
 
 export default class TableStore {
 

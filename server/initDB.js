@@ -1,5 +1,7 @@
 const pool = require('./db.js')
 
+
+// Заполнение бд тестовыми файлами
 const fillDB = async () => {
     const isFilled = await pool.query(`
         SELECT "ID" FROM public.table
@@ -37,6 +39,8 @@ const fillDB = async () => {
         `)
 
 }
+
+//Создание таблицы если её нет
 module.exports = function initDB() {
     pool.query(`CREATE TABLE IF NOT EXISTS public."table"
 (

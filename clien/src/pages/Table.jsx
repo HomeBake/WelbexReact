@@ -9,10 +9,14 @@ import MyButton from "../components/UI/MyButton";
 import ModalWindow from "../components/UI/ModalWindow";
 import EditRow from "../components/EditRow";
 
+// Компонент страницы таблицы
+
+//Для шапки таблицы
 const tableHeaders = [
     'ДАТА', 'Название', 'Количество', 'Расстояние'
 ]
 
+// Для заполнения формы с созданием новой строки
 const emptyRow = {
     DATE: '',
     TITLE: '',

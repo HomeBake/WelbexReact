@@ -1,5 +1,7 @@
 import {makeAutoObservable} from "mobx";
 
+//Хранилище состояний для сущности фильтров. Внутри происходит валидация
+
 const conditionDict = {
     TITLE: ['LIKE', 'EQUAL'],
     DISTANCE: ['EQUAL', 'MORE', 'LESS'],

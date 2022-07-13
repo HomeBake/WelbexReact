@@ -8,3 +8,5 @@ export const codeToRus = {
     MORE: '>',
     LESS: '<',
 }
+
+// Перевод кодов в удобный вид

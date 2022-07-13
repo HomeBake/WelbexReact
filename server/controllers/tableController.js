@@ -1,17 +1,19 @@
 const tableService = require('../service/tableService')
 const ApiError = require("../errors/ApiError");
 
+//Контроллер сущности таблицы
+
 class tableController {
+    // Получение нужных строк таблицы
     async getRows(req, res, next) {
         try {
             let {sortColumn, limit, page, fColumn, fCondition, fValue} = req.query
-            limit = limit || 9
-            page = page || 1
+            limit = limit || 9 // Если лимит от пользователя не пришел ставим 9
+            page = page || 1 // Так-же
             const rows = await tableService.getRows(sortColumn, limit, page, fColumn, fCondition, fValue)
-            console.log(rows)
             if (rows instanceof ApiError) {
                 return next(rows)
-            }
+            }// Если приходит ошибка, то отправляем её в мидлвеер
             return res.json({rows})
         } catch (e) {
             return next(ApiError.serverError())

@@ -1,3 +1,8 @@
+
+/*
+* Сервис для работы с запросами в бд связанных с сущностью таблицы
+*/
+
 const pool = require('../db')
 const ApiError = require("../errors/ApiError");
 
@@ -9,22 +14,23 @@ const sortDict = {
     AMOUNT_DOWN: `"AMOUNT"  DESC`,
     DISTANCE_UP: `"DISTANCE"`,
     DISTANCE_DOWN: `"DISTANCE" DESC`,
-}
+} // Словарь для проверки валидности данных от клиента
+
 const fColumnDict = {
     TITLE: 'string', DATE: 'date', AMOUNT: 'int', DISTANCE: 'float',
-}
+} // Словарь для проверки валидности данных от клиента
 
 const fConditionDict = {
     EQUAL: `=`, LIKE: `LIKE`, MORE: `>`, LESS: '<',
-}
+} // Словарь для проверки валидности данных от клиента
 
 function isPositiveInt(value) {
     return /^\d+$/.test(value);
-}
+} // Проверка на положительное целое число
 
 function isFloat(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
-}
+} // Проверка на число
 
 function validateDate(row) {
     try {
@@ -41,7 +47,7 @@ function validateDate(row) {
     if (!isFloat(row.DISTANCE)) {
         return ApiError.invalidData('Неверная дистанция')
     }
-}
+} // Валидация данных для обновления или добавления
 
 function validateFilters(fColumn, fCondition, fValue) {
     if (!(fColumn in fColumnDict)) {
@@ -66,20 +72,27 @@ function validateFilters(fColumn, fCondition, fValue) {
     if (fColumnDict[fColumn] === 'float' && !isFloat(fValue)) {
         throw new Error('Необходимо число')
     }
-}
+} // Валидация данных для получения
 
 class TableService {
+    // Получение строк таблицы
     static async getRows(sortColumn, limit, page, fColumn, fCondition, fValue) {
         let rows
-        const offset = page * limit - limit
-        sortColumn = sortDict[sortColumn] || sortDict["DEFAULT"]
-        if (fColumn && fValue && fCondition) {
-            validateFilters(fColumn, fCondition, fValue)
+        const offset = page * limit - limit // считаем offset
+        sortColumn = sortDict[sortColumn] || sortDict["DEFAULT"] // Устанавливаем порядок сортировки, если его
+        // нет ставим дефолт, таким образом не нужно каждый раз проверять пришел ли он от пользователя
+        if (fColumn && fValue && fCondition) { // Если пришли фильтры
+            validateFilters(fColumn, fCondition, fValue) // Проверяем данные
             if (fColumn === 'TITLE') {
                 fValue = `%${fValue}%`
             }
             rows = await pool.query(`
-            SELECT "ID", to_char("DATE", 'YYYY-MM-DD') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
+            SELECT "ID",
+              to_char("DATE", 'YYYY-MM-DD') /* Форматируем дату */ as "DATE",
+              "TITLE",
+              "AMOUNT",
+              "DISTANCE",
+              count(*) OVER() AS count, // Для пагинации
             FROM public."table"
             WHERE "${fColumn}" ${fConditionDict[fCondition]} '${fValue}'
             ORDER BY ${sortColumn}
@@ -88,8 +101,15 @@ class TableService {
             `)
             return rows.rows
         }
+        // Если фильтров нет
         rows = await pool.query(`
-            SELECT "ID", to_char("DATE", 'YYYY-MM-DD') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
+            SELECT 
+                "ID",
+                to_char("DATE", 'YYYY-MM-DD') as "DATE",
+                "TITLE",
+                "AMOUNT",
+                "DISTANCE",
+                count(*) OVER() AS count
             FROM public."table"
             ORDER BY ${sortColumn}
             LIMIT ${limit} 
@@ -97,13 +117,13 @@ class TableService {
             `)
         return rows.rows
     }
-
+    // Редактирование строки
     static async editRow(row) {
-        const validate = validateDate(row)
+        const validate = validateDate(row) // Валидация данных
         if (validate instanceof ApiError) {
             return validate
         }
-        const date = new Date(row.DATE).toLocaleDateString()
+        const date = new Date(row.DATE).toLocaleDateString() //Приведение даты в нужный вид
         const result = await pool.query(`
         UPDATE public."table" SET
         "TITLE" = '${row.TITLE}',
@@ -116,20 +136,15 @@ class TableService {
         return result
     }
 
+    //Удаление строки
     static async deleteRow(id) {
-        const row = await pool.query(`
-            SELECT COUNT("ID") as "count"
-            FROM (SELECT "ID" FROM public."table" WHERE "ID" = ${id}) as "F"
-        `)
-        if (row.count === 0) {
-            return ApiError.invalidData('Такой строки не существует')
-        }
         const result = await pool.query(`
             DELETE FROM public."table" WHERE "ID" = ${id}
         `)
         return result
     }
 
+    // Добавление строки
     static async addRow(row) {
 
         const validate = validateDate(row)

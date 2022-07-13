@@ -1,3 +1,5 @@
+//Класс для описания ошибок
+
 class ApiError extends Error {
     constructor(status, message) {
         super()
