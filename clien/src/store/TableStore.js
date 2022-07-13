@@ -29,11 +29,11 @@ export default class TableStore {
     }
 
     get limit() {
-        return this._page;
+        return this._limit;
     }
 
     setLimit(int) {
-        this._page = int;
+        this._limit = int;
     }
 
     get isDeleted() {

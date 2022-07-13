@@ -5,5 +5,6 @@ const router = new Router
 router.get('/rows',tableController.getRows)
 router.post('/rows/edit',tableController.editRow)
 router.delete('/rows/delete',tableController.deleteRow)
+router.post('/rows/add',tableController.addRow)
 
 module.exports = router

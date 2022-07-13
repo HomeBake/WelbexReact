@@ -42,3 +42,10 @@ export const deleteRow = async (id) => {
     })
     return res
 }
+
+export const addRow = async (row) => {
+    const res = await $host.post(baseUrl + 'add', {
+        row
+    })
+    return res
+}

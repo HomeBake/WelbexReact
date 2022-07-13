@@ -32,6 +32,23 @@ function isFloat(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
+function validateDate(row) {
+    try {
+        Date.parse(row.DATE)
+    } catch (e) {
+        return ApiError.invalidData('Неверная дата')
+    }
+    if (isNaN(Date.parse(row.DATE))) {
+        return ApiError.invalidData('Неверная дата')
+    }
+    if (!isPositiveInt(row.AMOUNT)) {
+        return ApiError.invalidData('Неверное количество')
+    }
+    if (!isFloat(row.DISTANCE)) {
+        return ApiError.invalidData('Неверная дистанция')
+    }
+}
+
 function validateFilters(fColumn, fCondition, fValue) {
     if (!(fColumn in fColumnDict)) {
         throw new Error('Колонки для фильтрации не существует')
@@ -68,7 +85,7 @@ class TableService {
                 fValue = `%${fValue}%`
             }
             rows = await pool.query(`
-            SELECT "ID", to_char("DATE", 'MM/DD/YYYY') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
+            SELECT "ID", to_char("DATE", 'YYYY-MM-DD') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
             FROM public."table"
             WHERE "${fColumn}" ${fConditionDict[fCondition]} '${fValue}'
             ORDER BY ${sortColumn}
@@ -78,7 +95,7 @@ class TableService {
             return rows.rows
         }
         rows = await pool.query(`
-            SELECT "ID", to_char("DATE", 'MM/DD/YYYY') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
+            SELECT "ID", to_char("DATE", 'YYYY-MM-DD') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
             FROM public."table"
             ORDER BY ${sortColumn}
             LIMIT ${limit} 
@@ -88,19 +105,9 @@ class TableService {
     }
 
     static async editRow(row) {
-        try {
-            Date.parse(row.DATE)
-        } catch (e) {
-            return ApiError.invalidData('Неверная дата')
-        }
-        if (isNaN(Date.parse(row.DATE))) {
-            return ApiError.invalidData('Неверная дата')
-        }
-        if (!isPositiveInt(row.AMOUNT)) {
-            return ApiError.invalidData('Неверное количество')
-        }
-        if (!isFloat(row.DISTANCE)) {
-            return ApiError.invalidData('Неверная дистанция')
+        const validate = validateDate(row)
+        if (validate instanceof ApiError) {
+            return validate
         }
         const date = new Date(row.DATE).toLocaleDateString()
         const result = await pool.query(`
@@ -125,6 +132,24 @@ class TableService {
         }
         const result = await pool.query(`
             DELETE FROM public."table" WHERE "ID" = ${id}
+        `)
+        return result
+    }
+
+    static async addRow(row) {
+
+        const validate = validateDate(row)
+        const date = new Date(row.DATE).toLocaleDateString()
+        if (validate instanceof ApiError) {
+            return validate
+        }
+        const result = await pool.query(`
+            INSERT INTO public."table" ("DATE", "TITLE", "AMOUNT", "DISTANCE") 
+            VALUES (
+            '${date}',
+             '${row.TITLE}',
+              '${row.AMOUNT}'::bigint,
+               '${row.DISTANCE}'::numeric)
         `)
         return result
     }

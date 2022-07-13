@@ -2,7 +2,7 @@ import React from 'react';
 import MyInput from "./UI/MyInput";
 import MyButton from "./UI/MyButton";
 
-const EditRow = ({selectedRow,setSelectedRow, saveChange}) => {
+const EditRow = ({selectedRow,setSelectedRow, saveChange,error}) => {
 
     const changeRow = (e) => {
         let newRow = {}
@@ -16,7 +16,7 @@ const EditRow = ({selectedRow,setSelectedRow, saveChange}) => {
         }
         setSelectedRow(newRow)
     }
-
+    console.log(selectedRow.DATE)
     return (
         <div
             className={'editRow'}
@@ -24,6 +24,7 @@ const EditRow = ({selectedRow,setSelectedRow, saveChange}) => {
             <MyInput
                 title={'Дата'}
                 id={'DATE'}
+                type={'date'}
                 value={selectedRow.DATE}
                 onChange={changeRow}
             />
@@ -53,6 +54,8 @@ const EditRow = ({selectedRow,setSelectedRow, saveChange}) => {
                     Сохранить
                 </MyButton>
             </div>
+            {error &&
+                <div> {error} </div>}
         </div>
     );
 };

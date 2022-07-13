@@ -50,12 +50,25 @@ export default class FilterStore {
 
     setSelectedFilterCol(string) {
         this.setSelectedFilterCondition('')
-        this.setFilterCondition(conditionDict[string])
-        this._selectedFilterCol = string;
+        console.log(conditionDict[string])
+        if (conditionDict[string]) {
+            this.setFilterCondition(conditionDict[string])
+            this._selectedFilterCol = string;
+        }
+        else {
+            this._selectedFilterCol = '';
+        }
     }
 
     setSelectedFilterCondition(string) {
-        this._selectedFilterCondition = string;
+        if (string !== 'Условие') {
+            this._selectedFilterCondition = string;
+        }
+        else {
+            this._selectedFilterCondition = '';
+        }
+
+
     }
 
     setFilterValue(string) {

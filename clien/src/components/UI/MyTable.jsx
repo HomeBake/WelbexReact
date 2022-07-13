@@ -13,14 +13,20 @@ const MyTable = memo(({tableHeaders, rows}) => {
                 <tbody>
                 <tr>
                     {tableHeaders.map((header, num) =>
-                        <td key={num} className={`table-head`}>
+                        <td
+                            key={num}
+                            className={`table-head`}
+                        >
                             {header}
                         </td>
                     )}
                 </tr>
                 {rows.length > 0 ?
                     rows.map(row =>
-                        <TableBody key={row.ID} row={row}/>
+                        <TableBody
+                            key={row.ID}
+                            row={row}
+                        />
                     )
                     :
                     <tr>

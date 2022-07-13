@@ -46,6 +46,23 @@ class tableController {
             return next(ApiError.badRequest(e.message))
         }
     }
+
+    async addRow(req, res, next) {
+        try {
+            const {row} = req.body
+            console.log(row)
+            const result = await tableService.addRow(row)
+            if (result instanceof ApiError)
+            {
+                return next(result)
+            }
+            return res.json({result})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
 }
+
+
 
 module.exports = new tableController

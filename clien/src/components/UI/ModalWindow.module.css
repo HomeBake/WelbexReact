@@ -11,6 +11,7 @@
     bottom: 0;
     background: rgba(0, 2, 3, 0.7);
 }
+
 .modal {
     display: flex;
     align-items: stretch;
@@ -31,9 +32,6 @@
     align-items: center;
 }
 
-.modal-title {
-
-}
 
 .hr-line {
     margin: 1px 0;

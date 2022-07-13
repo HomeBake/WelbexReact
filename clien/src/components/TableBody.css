@@ -1,9 +1,19 @@
 .add-row {
     cursor: pointer;
+    width: 20px;
 }
 
 .add-row:hover {
     background: #888888;
+}
+
+.delete-row {
+    cursor: pointer;
+    width: 20px;
+}
+
+.delete-row:hover {
+    background: #ff0000;
 }
 
 .edit-row {

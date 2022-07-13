@@ -5,15 +5,21 @@ import './Filter.css'
 import '../utils/constant'
 import {codeToRus} from "../utils/constant";
 import MyInput from "./UI/MyInput";
+import MySelect from "./UI/MySelect";
 
 const Filter = observer(() => {
-    const {filterStore} = useContext(Context)
+    const {filterStore, tableStore} = useContext(Context)
     const columName = filterStore.filterCol
     const condition = filterStore.filterCondition
+    const changeFilter = (e) => {
+        filterStore.setSelectedFilterCondition(e.target.value)
+        tableStore.setPage(1)
+    }
+
     return (
         <div className={'filter-wrapper'}>
             <h1> Фильтрация </h1>
-            <select
+            <MySelect
                 className={'filter-unit select-css'}
                 value={filterStore.selectedFilterCol}
                 onChange={e => filterStore.setSelectedFilterCol(e.target.value)}
@@ -27,13 +33,13 @@ const Filter = observer(() => {
                         {codeToRus[colum]}
                     </option>
             )}
-            </select>
-            <select
+            </MySelect>
+            <MySelect
                 className={'filter-unit select-css'}
                 value={filterStore.selectedFilterCondition}
-                onChange={e => filterStore.setSelectedFilterCondition(e.target.value)}
+                onChange={changeFilter}
             >
-                <option>Уловие</option>
+                <option>Условие</option>
                 {condition.map(condition =>
                     <option
                         key={condition}
@@ -42,9 +48,9 @@ const Filter = observer(() => {
                         {codeToRus[condition]}
                     </option>
                 )}
-            </select>
+            </MySelect>
             <MyInput
-                className={'filter-unit '}
+                className={'filter-unit'}
                 type={"text"}
                 value={filterStore.filterValue}
                 placeholder={'Строка для сравнения'}

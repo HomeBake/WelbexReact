@@ -11,7 +11,8 @@ const ContextProvider = ({ children }) => {
             filterStore: new FilterStore(),
             tableStore: new TableStore(),
             sortStore: new SortStore()
-        }}>
+        }}
+        >
             {children}
         </Context.Provider>
     );

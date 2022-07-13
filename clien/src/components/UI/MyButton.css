@@ -15,8 +15,7 @@
 .button:hover {
     background-color: #ffffff; /* Green */
     color: #4CAF50;
-    border: #4CAF50 solid 1px;
-;
+    border: #4CAF50 solid 1px;;
 }
 
 .button-outline {

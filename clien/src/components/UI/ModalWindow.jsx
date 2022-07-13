@@ -1,33 +1,31 @@
 import React from 'react';
-import './ModalWindow.css'
+import styles from './ModalWindow.module.css'
 
 const ModalWindow = ({title, onHide, children}) => {
     return (
         <div
-            className={'modal-wrapper'}
-            onClick={
-                onHide
-            }
+            className={styles['modal-wrapper']}
+            onClick={onHide}
         >
             <div
-                className={'modal'}
+                className={styles.modal}
                 onClick={(e) => {
                     e.stopPropagation()
                 }}
             >
-                <div className={'modal-head'}>
-                    <div className={"modal-title"}>
+                <div className={styles['modal-head']}>
+                    <div className={styles['modal-title']}>
                         {title}
                     </div>
                     <button
-                        className={"modal-close"}
+                        className={styles['modal-close']}
                         onClick={onHide}
                     >
                         x
                     </button>
                 </div>
-                <hr className={'hr-line'}></hr>
-                <div className={'modal-body'}>
+                <hr className={styles['hr-line']}></hr>
+                <div className={styles['modal-body']}>
                     {children}
                 </div>
             </div>

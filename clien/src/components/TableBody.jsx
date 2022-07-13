@@ -1,12 +1,10 @@
-import React, {memo, useCallback, useContext, useState} from 'react';
+import React, {memo, useContext, useState} from 'react';
 import './TableBody.css'
 import ModalWindow from "./UI/ModalWindow";
-import MyInput from "./UI/MyInput";
-import MyButton from "./UI/MyButton";
 import {deleteRow, editRow} from "../http/tableAPI";
 import {Context} from "./ContextProvider";
-import {useEffect} from "react";
 import EditRow from "./EditRow";
+
 
 const TableBody = memo(({row}) => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -14,14 +12,11 @@ const TableBody = memo(({row}) => {
     const [error, setError] = useState('')
     const {tableStore} = useContext(Context)
 
-
     const delRow = (id) => {
-        deleteRow(id).then( res => {
-            const rows = tableStore.rows
+        deleteRow(id).then( () => {
             tableStore.setIsDeleted(tableStore.isDeleted + 1)
         })
     }
-
 
     const saveChange = (selectedRow) => {
         editRow(selectedRow).then(res => {
@@ -43,7 +38,7 @@ const TableBody = memo(({row}) => {
         })
 
     }
-
+    console.log()
     return (
         <>
             {modalVisible &&
@@ -60,10 +55,10 @@ const TableBody = memo(({row}) => {
                         selectedRow={selectedRow}
                         setSelectedRow={setSelectedRow}
                         saveChange={saveChange}
+                        error={error}
                     />
-                    {error &&
-                    <div> {error} </div>
-                    }
+
+
                 </ModalWindow>
             }
             <tr>
@@ -78,11 +73,11 @@ const TableBody = memo(({row}) => {
                         setSelectedRow(row)
                     }}
                 >
-                    +
+                    ®
                 </td>
                 <td
                     className={'delete-row unselectable'}
-                    onClick={e => {
+                    onClick={() => {
                         delRow(row.ID)
                     }}
                 >
