@@ -25,14 +25,14 @@ const Filter = observer(() => {
                 onChange={e => filterStore.setSelectedFilterCol(e.target.value)}
             >
                 <option>Название ячейки</option>
-            {columName.map(colum =>
+                {columName.map(colum =>
                     <option
                         key={colum}
                         value={colum}
                     >
                         {codeToRus[colum]}
                     </option>
-            )}
+                )}
             </MySelect>
             <MySelect
                 className={'filter-unit select-css'}

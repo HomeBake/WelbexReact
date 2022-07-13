@@ -17,7 +17,7 @@ app.use(errorHandler)
 const start = async () => {
     try {
         initDB()
-        app.listen(PORT, ()=> console.log(`Server run on ${PORT} PORT`))
+        app.listen(PORT, () => console.log(`Server run on ${PORT} PORT`))
     } catch (e) {
         console.log(e)
     }

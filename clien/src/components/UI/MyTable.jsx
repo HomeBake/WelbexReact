@@ -1,9 +1,5 @@
-import React, {memo, useContext} from 'react';
+import React, {memo} from 'react';
 import './MyTable.css'
-import {Context} from "../ContextProvider";
-import {observer} from "mobx-react-lite";
-import {useEffect} from "react";
-import {fetchRows} from "../../http/tableAPI";
 import TableBody from "../TableBody";
 
 const MyTable = memo(({tableHeaders, rows}) => {

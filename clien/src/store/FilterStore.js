@@ -7,7 +7,7 @@ const conditionDict = {
     AMOUNT: ['EQUAL', 'MORE', 'LESS']
 }
 
-const filterCon = ['TITLE','DISTANCE', 'DATE', 'AMOUNT']
+const filterCon = ['TITLE', 'DISTANCE', 'DATE', 'AMOUNT']
 
 
 export default class FilterStore {
@@ -28,6 +28,7 @@ export default class FilterStore {
     get filterCondition() {
         return this._filterCondition;
     }
+
     get selectedFilterCol() {
         return this._selectedFilterCol;
     }
@@ -54,8 +55,7 @@ export default class FilterStore {
         if (conditionDict[string]) {
             this.setFilterCondition(conditionDict[string])
             this._selectedFilterCol = string;
-        }
-        else {
+        } else {
             this._selectedFilterCol = '';
         }
     }
@@ -63,8 +63,7 @@ export default class FilterStore {
     setSelectedFilterCondition(string) {
         if (string !== 'Условие') {
             this._selectedFilterCondition = string;
-        }
-        else {
+        } else {
             this._selectedFilterCondition = '';
         }
 

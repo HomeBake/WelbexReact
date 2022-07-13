@@ -19,4 +19,6 @@
     color: white;
 }
 
-.pagination div:hover:not(.active) {background-color: #ddd;}
+.pagination div:hover:not(.active) {
+    background-color: #ddd;
+}

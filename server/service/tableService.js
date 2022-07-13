@@ -11,17 +11,11 @@ const sortDict = {
     DISTANCE_DOWN: `"DISTANCE" DESC`,
 }
 const fColumnDict = {
-    TITLE: 'string',
-    DATE: 'date',
-    AMOUNT: 'int',
-    DISTANCE: 'float',
+    TITLE: 'string', DATE: 'date', AMOUNT: 'int', DISTANCE: 'float',
 }
 
 const fConditionDict = {
-    EQUAL: `=`,
-    LIKE: `LIKE`,
-    MORE: `>`,
-    LESS: '<',
+    EQUAL: `=`, LIKE: `LIKE`, MORE: `>`, LESS: '<',
 }
 
 function isPositiveInt(value) {

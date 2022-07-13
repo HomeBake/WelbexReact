@@ -10,7 +10,7 @@ import ModalWindow from "../components/UI/ModalWindow";
 import EditRow from "../components/EditRow";
 
 const tableHeaders = [
-    'ДАТА', 'Название', 'Количество' , 'Расстояние'
+    'ДАТА', 'Название', 'Количество', 'Расстояние'
 ]
 
 const emptyRow = {
@@ -36,34 +36,33 @@ const Table = observer(() => {
             if (res.status === 200) {
                 tableStore.setIsDeleted(tableStore.isDeleted + 1)
                 setModalVisible(false)
-            }
-            else {
+            } else {
                 setError(res.data.message)
             }
         })
     }
 
-    useEffect(()=> {
-        fetchRows().then( data => {
+    useEffect(() => {
+        fetchRows().then(data => {
             tableStore.setRows(data.rows)
             setRowsAmount(data.rows[0].count)
         })
     }, [])
 
-    useEffect(()=> {
+    useEffect(() => {
         const fColumn = filterStore.selectedFilterCol
         const fCondition = filterStore.selectedFilterCondition
         const fValue = filterStore.filterValue
         const sortColumn = sortStore.selectedSort
         const page = tableStore.page
-        fetchRows(fColumn, fCondition, fValue, sortColumn, page).then( data => {
+        fetchRows(fColumn, fCondition, fValue, sortColumn, page).then(data => {
             if (data.rows) {
                 tableStore.setRows(data.rows)
                 data.rows.length &&
                 setRowsAmount(data.rows[0].count)
             }
         }).catch(console.log).finally(endLoading)
-    },[
+    }, [
         filterStore.selectedFilterCol,
         filterStore.selectedFilterCondition,
         filterStore.filterValue,
@@ -77,7 +76,7 @@ const Table = observer(() => {
             {
                 modalVisible &&
                 <ModalWindow
-                    onHide={ () => setModalVisible(false)}
+                    onHide={() => setModalVisible(false)}
                     title={'Создание'}
                 >
                     <EditRow
@@ -93,7 +92,7 @@ const Table = observer(() => {
             {isLoading && <h2> Загрузка</h2>}
             <MyButton
                 className={'button'}
-                onClick={ () => setModalVisible(true)}
+                onClick={() => setModalVisible(true)}
             > Добавить
             </MyButton>
             {rowsAmount > limit &&

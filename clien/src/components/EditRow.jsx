@@ -2,15 +2,14 @@ import React from 'react';
 import MyInput from "./UI/MyInput";
 import MyButton from "./UI/MyButton";
 
-const EditRow = ({selectedRow,setSelectedRow, saveChange,error}) => {
+const EditRow = ({selectedRow, setSelectedRow, saveChange, error}) => {
 
     const changeRow = (e) => {
         let newRow = {}
         for (let key in selectedRow) {
             if (key === e.target.id) {
                 newRow[key] = e.target.value
-            }
-            else {
+            } else {
                 newRow[key] = selectedRow[key]
             }
         }

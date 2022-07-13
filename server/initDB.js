@@ -35,9 +35,9 @@ const fillDB = async () => {
         INSERT INTO public."table" ("DATE", "TITLE", "AMOUNT", "DISTANCE") 
         VALUES ('2014.03.26'::date, 'Печеньки'::character varying, '14400'::bigint, '232.5'::numeric);
         `)
-    
+
 }
-module.exports =  function initDB() {
+module.exports = function initDB() {
     pool.query(`CREATE TABLE IF NOT EXISTS public."table"
 (
     "ID" serial,
@@ -48,9 +48,9 @@ module.exports =  function initDB() {
     CONSTRAINT table_pkey PRIMARY KEY ("ID")
 );
 `,
-        (error,results) => {
-        error ? console.log(error)
-            :
-            fillDB()
+        (error, results) => {
+            error ? console.log(error)
+                :
+                fillDB()
         })
 }

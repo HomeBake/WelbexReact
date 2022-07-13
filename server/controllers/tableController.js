@@ -9,8 +9,7 @@ class tableController {
             page = page || 1
             const rows = await tableService.getRows(sortColumn, limit, page, fColumn, fCondition, fValue)
             console.log(rows)
-            if (rows instanceof ApiError)
-            {
+            if (rows instanceof ApiError) {
                 return next(rows)
             }
             return res.json({rows})
@@ -23,8 +22,7 @@ class tableController {
         try {
             const {row} = req.body
             const result = await tableService.editRow(row)
-            if (result instanceof ApiError)
-            {
+            if (result instanceof ApiError) {
                 return next(result)
             }
             return res.json({result})
@@ -37,8 +35,7 @@ class tableController {
         try {
             const {id} = req.query
             const result = await tableService.deleteRow(id)
-            if (result instanceof ApiError)
-            {
+            if (result instanceof ApiError) {
                 return next(result)
             }
             return res.json({result})
@@ -52,8 +49,7 @@ class tableController {
             const {row} = req.body
             console.log(row)
             const result = await tableService.addRow(row)
-            if (result instanceof ApiError)
-            {
+            if (result instanceof ApiError) {
                 return next(result)
             }
             return res.json({result})
@@ -62,7 +58,6 @@ class tableController {
         }
     }
 }
-
 
 
 module.exports = new tableController

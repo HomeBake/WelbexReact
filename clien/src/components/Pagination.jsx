@@ -1,4 +1,4 @@
-import React, {memo, useContext} from 'react';
+import React, {useContext} from 'react';
 import {Context} from "./ContextProvider";
 import './Pagination.css'
 import {observer} from "mobx-react-lite";
@@ -14,7 +14,7 @@ const Pagination = observer(({limit, rowsAmount}) => {
     const renderPageNumber = pageNumbers.map(number => {
         const classes = currentPage === number ? 'pagination-active unselectable' : 'unselectable';
         if (number === 1 || number === pageNumbers.length || (number >= currentPage - 2 && number <= currentPage + 2)) {
-            return(
+            return (
                 <div key={number} className={classes} onClick={() => tableStore.setPage(number)}> {number} </div>
             )
         }

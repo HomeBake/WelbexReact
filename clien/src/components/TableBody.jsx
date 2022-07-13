@@ -13,7 +13,7 @@ const TableBody = memo(({row}) => {
     const {tableStore} = useContext(Context)
 
     const delRow = (id) => {
-        deleteRow(id).then( () => {
+        deleteRow(id).then(() => {
             tableStore.setIsDeleted(tableStore.isDeleted + 1)
         })
     }
@@ -23,16 +23,14 @@ const TableBody = memo(({row}) => {
             if (res.status === 200) {
                 setModalVisible(false)
                 const rows = tableStore.rows
-                tableStore.setRows(rows.map((row)=> {
+                tableStore.setRows(rows.map((row) => {
                     if (row.ID !== selectedRow.ID) {
                         return row
-                    }
-                    else {
+                    } else {
                         return selectedRow
                     }
                 }))
-            }
-            else {
+            } else {
                 setError(res.data.message)
             }
         })

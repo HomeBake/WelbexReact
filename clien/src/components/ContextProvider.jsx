@@ -5,7 +5,7 @@ import SortStore from "../store/SortStore";
 
 export const Context = createContext(null)
 
-const ContextProvider = ({ children }) => {
+const ContextProvider = ({children}) => {
     return (
         <Context.Provider value={{
             filterStore: new FilterStore(),
