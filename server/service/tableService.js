@@ -1,8 +1,10 @@
 const pool = require('../db')
+const ApiError = require("../errors/ApiError");
 
 const sortDict = {
+    DEFAULT: `"ID"`,
     TITLE_UP: `"TITLE"`,
-    TITLE_DOWN: `"TITLE  DESC"`,
+    TITLE_DOWN: `"TITLE"  DESC`,
     AMOUNT_UP: `"AMOUNT"`,
     AMOUNT_DOWN: `"AMOUNT"  DESC`,
     DISTANCE_UP: `"DISTANCE"`,
@@ -30,7 +32,7 @@ function isFloat(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
-function validateFilters(fColumn,fCondition,fValue) {
+function validateFilters(fColumn, fCondition, fValue) {
     if (!(fColumn in fColumnDict)) {
         throw new Error('Колонки для фильтрации не существует')
     }
@@ -59,52 +61,72 @@ class TableService {
     static async getRows(sortColumn, limit, page, fColumn, fCondition, fValue) {
         let rows
         const offset = page * limit - limit
-        if (!sortColumn && !fColumn) {
+        sortColumn = sortDict[sortColumn] || sortDict["DEFAULT"]
+        if (fColumn && fValue && fCondition) {
+            validateFilters(fColumn, fCondition, fValue)
+            if (fColumn === 'TITLE') {
+                fValue = `%${fValue}%`
+            }
             rows = await pool.query(`
-            SELECT * 
-            FROM public."table" 
-            LIMIT ${limit} 
-            OFFSET ${offset}
-            `)
-        }
-        if (sortColumn && !fColumn) {
-            rows = await pool.query(`
-            SELECT * 
-            FROM public."table"
-            ORDER BY ${sortDict[sortColumn]}
-            LIMIT ${limit} 
-            OFFSET ${offset}
-            `)
-        }
-        try {
-            validateFilters(fColumn,fCondition,fValue)
-        }
-        catch (e) {
-            throw new Error(e.message)
-        }
-        if (fColumn === 'TITLE') {
-            fValue = `%${fValue}%`
-        }
-        if (!sortColumn && fColumn) {
-            rows = await pool.query(`
-            SELECT * 
+            SELECT "ID", to_char("DATE", 'MM/DD/YYYY') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
             FROM public."table"
             WHERE "${fColumn}" ${fConditionDict[fCondition]} '${fValue}'
+            ORDER BY ${sortColumn}
             LIMIT ${limit} 
             OFFSET ${offset}
             `)
+            return rows.rows
         }
-        if (sortColumn && fColumn) {
-            rows = await pool.query(`
-            SELECT * 
+        rows = await pool.query(`
+            SELECT "ID", to_char("DATE", 'MM/DD/YYYY') as "DATE", "TITLE", "AMOUNT", "DISTANCE" ,count(*) OVER() AS count
             FROM public."table"
-            WHERE "${fColumn}" ${fConditionDict[fCondition]} '${fValue}'
-            ORDER BY ${sortDict[sortColumn]}
+            ORDER BY ${sortColumn}
             LIMIT ${limit} 
             OFFSET ${offset}
             `)
-        }
         return rows.rows
+    }
+
+    static async editRow(row) {
+        try {
+            Date.parse(row.DATE)
+        } catch (e) {
+            return ApiError.invalidData('Неверная дата')
+        }
+        if (isNaN(Date.parse(row.DATE))) {
+            return ApiError.invalidData('Неверная дата')
+        }
+        if (!isPositiveInt(row.AMOUNT)) {
+            return ApiError.invalidData('Неверное количество')
+        }
+        if (!isFloat(row.DISTANCE)) {
+            return ApiError.invalidData('Неверная дистанция')
+        }
+        const date = new Date(row.DATE).toLocaleDateString()
+        const result = await pool.query(`
+        UPDATE public."table" SET
+        "TITLE" = '${row.TITLE}',
+        "DATE" = '${date}',
+        "DISTANCE" = '${row.DISTANCE}',
+        "AMOUNT" = '${row.AMOUNT}'
+         WHERE
+        "ID" = ${row.ID};
+        `)
+        return result
+    }
+
+    static async deleteRow(id) {
+        const row = await pool.query(`
+            SELECT COUNT("ID") as "count"
+            FROM (SELECT "ID" FROM public."table" WHERE "ID" = ${id}) as "F"
+        `)
+        if (row.count === 0) {
+            return ApiError.invalidData('Такой строки не существует')
+        }
+        const result = await pool.query(`
+            DELETE FROM public."table" WHERE "ID" = ${id}
+        `)
+        return result
     }
 }
 

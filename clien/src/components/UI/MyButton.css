@@ -1,0 +1,35 @@
+.button {
+    background-color: #4CAF50;
+    border-radius: 15px;
+    border: #ffffff solid 1px;
+    color: white;
+    padding: 7px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    background-color: #ffffff; /* Green */
+    color: #4CAF50;
+    border: #4CAF50 solid 1px;
+;
+}
+
+.button-outline {
+    background-color: white;
+    color: black;
+    padding: 7px;
+    border: 2px solid #4CAF50;
+    border-radius: 15px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button-outline:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
